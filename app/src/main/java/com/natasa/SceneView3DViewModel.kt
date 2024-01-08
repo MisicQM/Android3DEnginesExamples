@@ -24,18 +24,18 @@ class SceneView3DViewModel : ViewModel() {
 
     fun moveForward() {
         _position.value = _position.value.copy(
-            x = _position.value.x + 1f,
+            x = _position.value.x - 1f,
             y = _position.value.y,
             z = _position.value.z
-        ) // Adjust movement step as needed
+        )
     }
 
     fun moveBackward() {
         _position.value = _position.value.copy(
-            x = _position.value.x - 1f,
+            x = _position.value.x + 1f,
             y = _position.value.y,
             z = _position.value.z
-        ) // Adjust movement step as needed
+        )
     }
 }
 
