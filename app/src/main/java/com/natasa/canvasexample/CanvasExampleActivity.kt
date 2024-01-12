@@ -1,6 +1,5 @@
 package com.natasa.canvasexample
 
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -34,14 +33,18 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.text.TextStyle
+import com.natasa.canvasexample.ImageHelper.loadImageBitmap
+import com.natasa.canvasexample.PathHelper.cubicBezier
+import com.natasa.canvasexample.PathHelper.cubicBezierTangent
 import kotlinx.coroutines.launch
-import java.io.InputStream
-import kotlin.math.atan2
-import kotlin.math.pow
+
 
 class CanvasExampleActivity : ComponentActivity() {
     private val viewModel: TrajectoryViewModel by viewModels()
-
+    private val paint = android.graphics.Paint().apply {
+        isAntiAlias = true
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -50,17 +53,17 @@ class CanvasExampleActivity : ComponentActivity() {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
 
                       CarAndTrajectoryCanvas(viewModel = viewModel)
-                        TrajectoryViewMoreUsecases(viewModel = viewModel)
+                       // TrajectoryViewMoreUsecases(viewModel = viewModel)
+                        CoordinateTextCanvas()
                     }
                 }
             }
         }
     }
 }
-fun loadImageBitmap(inputStream: InputStream): ImageBitmap {
-    val bitmap = BitmapFactory.decodeStream(inputStream)
-    return bitmap.asImageBitmap()
-}
+
+
+
 @Composable
 fun CarAndTrajectoryCanvas(viewModel : TrajectoryViewModel) {
     val animatable = remember { Animatable(0f) }
@@ -86,9 +89,6 @@ fun CarAndTrajectoryCanvas(viewModel : TrajectoryViewModel) {
     Canvas(modifier = Modifier
         .fillMaxSize()
         .background(Color.LightGray)) {
-        // Define the car rectangle size
-
-
         // Define the starting point and the control points for the trajectory:
         //Offset( x: Float, y: Float)
 
@@ -96,10 +96,7 @@ fun CarAndTrajectoryCanvas(viewModel : TrajectoryViewModel) {
         val control1 = Offset(size.width / 4, size.height / 2)
         val control2 = Offset(3 * size.width / 4, size.height / 2)
         val end = Offset(size.width / 2, 0f)
-       // val start = center.copy(y = size.height - carHeightPx * 2)
-       // val control1 = Offset(size.width / 2f, size.height / 1.5f)
-       // val control2 = Offset(size.width / 2f, size.height / 3f)
-       // val end = Offset(size.width / 2f, carHeightPx)
+
 val points = listOf(start, control1, control2, end)
         // Draw the trajectory path
         val trajectoryPath = Path().apply {
@@ -117,6 +114,9 @@ val points = listOf(start, control1, control2, end)
     }
 }
 
+
+//drawing more trajectory points and handking of the drawing path smoothly by taking care not only to draw the line,
+//to draw the cubic Bezier curve or quadratic  Bezier curve
 @Composable
 fun TrajectoryViewMoreUsecases(viewModel: TrajectoryViewModel) {
     val trajectoryPoints by viewModel.trajectoryPoints.collectAsState()
@@ -170,26 +170,6 @@ fun TrajectoryViewMoreUsecases(viewModel: TrajectoryViewModel) {
         )
     }
 }
-// Helper functions for a single cubic Bezier curve
-fun cubicBezier2(t: Float, p0: Offset, p1: Offset, p2: Offset, p3: Offset): Offset {
-    val oneMinusT = 1 - t
-    return Offset(
-        x = oneMinusT.pow(3) * p0.x + 3 * oneMinusT.pow(2) * t * p1.x + 3 * oneMinusT * t.pow(2) * p2.x + t.pow(3) * p3.x,
-        y = oneMinusT.pow(3) * p0.y + 3 * oneMinusT.pow(2) * t * p1.y + 3 * oneMinusT * t.pow(2) * p2.y + t.pow(3) * p3.y
-    )
-}
-
-fun cubicBezierTangent2(t: Float, p0: Offset, p1: Offset, p2: Offset, p3: Offset): Float {
-    val oneMinusT = 1 - t
-    val dx = 3 * oneMinusT.pow(2) * (p1.x - p0.x) +
-            6 * oneMinusT * t * (p2.x - p1.x) +
-            3 * t.pow(2) * (p3.x - p2.x)
-    val dy = 3 * oneMinusT.pow(2) * (p1.y - p0.y) +
-            6 * oneMinusT * t * (p2.y - p1.y) +
-            3 * t.pow(2) * (p3.y - p2.y)
-    return atan2(dy, dx) * (180 / Math.PI).toFloat()
-}
-
 
 fun DrawScope.drawCar(
     topLeft: Offset,
@@ -200,35 +180,36 @@ fun DrawScope.drawCar(
     animatable: Animatable<Float, AnimationVector1D>,
     trajectoryPoints: List<Offset>
 ) {
+    // Make sure we have enough points to draw the curve
+    if (trajectoryPoints.size < 4) return
 
     // Handle the animatable value for multiple segments
-    val segmentCount = 2 // You have 2 cubic Bezier curves
+    val segmentCount = (trajectoryPoints.size - 1) / 3 // Calculate the number of segments dynamically
     val segmentLength = 1f / segmentCount
-    val currentSegment = (animatable.value * segmentCount).toInt()
-    val t = (animatable.value - currentSegment * segmentLength) / segmentLength
+    val currentSegment = (animatable.value * segmentCount).coerceIn(0f, segmentCount.toFloat()).toInt()
+    val t = ((animatable.value * segmentCount) % 1f).coerceIn(0f, 1f)
 
-    // Define the points for each segment
-     val trajectoryPoints = trajectoryPoints
-    val points =trajectoryPoints
-
-    // Get the points for the current segment
+    // Calculate the indices for the current segment
     val segmentIndex = currentSegment * 3
-    val segmentPoints = points.subList(segmentIndex, segmentIndex + 4)
+    val segmentEndIndex = minOf(segmentIndex + 4, trajectoryPoints.size)
+
+    // Get the points for the current segment ensuring we don't go out of bounds
+    val segmentPoints = trajectoryPoints.subList(segmentIndex, segmentEndIndex)
+
+    // If we don't have enough points for a full cubic curve, return
+    if (segmentPoints.size < 4) return
 
     // Interpolate the position for the current segment
-    val carPosition = cubicBezier2(t, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
+    val carPosition = cubicBezier(t, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
 
     // Calculate the tangent angle for the current segment
-    val tangentAngle = cubicBezierTangent2(t, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
-
-    //val scale = minOf(carWidthPx / imageBitmap.width, carHeightPx / imageBitmap.height)
-
-
+    val tangentAngle = cubicBezierTangent(t, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
 
     val scale = minOf(width / imageBitmap.width, height / imageBitmap.height)
+
     withTransform({
         // Rotate the image
-        rotate(degrees = tangentAngle+90, pivot = carPosition)
+        rotate(degrees = tangentAngle + 90, pivot = carPosition)
         // Proportionally scale the image
         scale(scale, scale, pivot = carPosition)
     }) {
@@ -236,11 +217,10 @@ fun DrawScope.drawCar(
         val scaledCarWidth = imageBitmap.width * scale
         val scaledCarHeight = imageBitmap.height * scale
 
-        // Adjust topLeft position so the center of the car aligns with carPosition,
-        //this is important for the car position on the path
+        // Adjust topLeft position so the center of the car aligns with carPosition
         val carTopLeft = Offset(
-            x = carPosition.x - (scaledCarWidth + scaledCarWidth/2),
-            y = carPosition.y - scaledCarHeight
+            x = carPosition.x - scaledCarWidth, //for the position seems somehow better to have it more on the center of the path
+            y = carPosition.y - scaledCarHeight / 2
         )
 
         // Draw the image
@@ -249,10 +229,9 @@ fun DrawScope.drawCar(
             topLeft = carTopLeft
         )
     }
-
-
 }
-/**Canvas coord:
+
+/**Canvas coordinates:
  * (0,0): Top-left corner of the canvas.
  * (width, 0): Top-right corner of the canvas.
  * (0, height): Bottom-left corner of the canvas.
