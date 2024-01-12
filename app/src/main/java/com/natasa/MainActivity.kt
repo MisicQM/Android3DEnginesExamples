@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.natasa.canvasexample.CanvasExampleActivity
 import com.natasa.filamentexample.FilamentActivity
 
 class MainActivity : ComponentActivity() {

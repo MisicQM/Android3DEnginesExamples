@@ -32,7 +32,7 @@
             android:exported="true"
             />
         <activity
-            android:name="com.natasa.CanvasExampleActivity"
+            android:name="com.natasa.canvasexample.CanvasExampleActivity"
             android:exported="true"
             />
         <activity
