@@ -31,6 +31,18 @@
             android:name="com.natasa.SceneView3DActivity"
             android:exported="true"
             />
+        <activity
+            android:name="com.natasa.CanvasExampleActivity"
+            android:exported="true"
+            />
+        <activity
+            android:name="com.natasa.CanvasExampleActivity2"
+            android:exported="true"
+            />
+        <activity
+            android:name="com.natasa.CanvasExampleActivity3"
+            android:exported="true"
+            />
     </application>
 
 </manifest>

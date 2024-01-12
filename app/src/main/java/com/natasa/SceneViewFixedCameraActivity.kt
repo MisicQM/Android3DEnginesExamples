@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,18 +15,26 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.filament.Camera
+import com.google.android.filament.utils.Float3
 import io.github.sceneview.Scene
 import io.github.sceneview.math.Position
 import io.github.sceneview.math.Rotation
@@ -36,6 +45,7 @@ import io.github.sceneview.rememberEngine
 import io.github.sceneview.rememberEnvironmentLoader
 import io.github.sceneview.rememberModelLoader
 import io.github.sceneview.rememberNode
+import kotlin.math.sqrt
 
 class SceneViewFixedCameraActivity : ComponentActivity() {
 
@@ -102,23 +112,135 @@ class SceneViewFixedCameraActivity : ComponentActivity() {
                         childNodes = listOf(
                             carNode, centerNode
                         ),
-                        environment = environmentLoader.createHDREnvironment(
-                            assetFileLocation = "models/wide_street_01_2k.hdr"
-                        )!!,
+                       // environment = environmentLoader.createHDREnvironment(
+                           // assetFileLocation = "models/wide_street_01_2k.hdr"
+                       // )!!,
                         onFrame = {
                             // Update the moving objects in the scene
                             // Note: The camera node is not updated here to maintain the top-down view
+
+                            //cameraNode.lookAt(centerNode)
                         }
                     )
                 }
 
                 // UI for controlling the moving car
                 SceneViewMovingObject(movingObjectNode = centerNode, viewModel = viewModel)
+                TriangleCanvas()
+                QuadrilateralCanvas()
+                SceneWithOverlayCanvas2(viewModel= viewModel)
             }
         }
     }
     }
+    @Composable
+    fun SceneWithOverlayCanvas(viewModel: SceneFixedCameraViewModel) {
+        // State for the path
+        val pathState = remember { mutableStateOf(Path()) }
 
+        Box(modifier = Modifier.fillMaxSize()) {
+            // Your SceneView setup here
+          //  Scene(
+                // Scene parameters...
+          //  )
+
+            // Canvas overlay
+            Canvas(modifier = Modifier.matchParentSize()) {
+                drawPath(pathState.value, color = Color.Blue
+                    , style = Stroke(width = 5f))
+            }
+        }
+
+        // Logic to update pathState based on your application's needs
+    }
+    @Composable
+    fun SceneWithOverlayCanvas2(viewModel: SceneFixedCameraViewModel) {
+        val pathState = remember { mutableStateOf(Path()) }
+
+        // Assume this function updates the path based on the object's position in the SceneView
+        val updatePath = { newPosition: Position ->
+            Log.d("position", "newPosition $newPosition")
+            // Convert SceneView's position to Canvas coordinates if necessary
+            // Then update the path
+            pathState.value = Path().apply {
+                // Example: moveTo and lineTo with new coordinates
+                moveTo(newPosition.x, newPosition.y)
+                //lineTo(newPosition.x, newPosition.y)
+            }
+        }
+
+        // Assuming you have a way to get updates about the object's position in the SceneView
+        LaunchedEffect(viewModel) {
+            viewModel.position.collect { newPosition ->
+                updatePath(newPosition)
+            }
+        }
+
+        Box(modifier = Modifier.fillMaxSize()) {
+
+            Canvas(modifier = Modifier.matchParentSize()) {
+                drawPath(pathState.value, color = Color.Red, style = Stroke(width = 5f))
+            }
+        }
+    }
+    fun magnitude1(v: Position): Float {
+        return sqrt(v.x * v.x + v.y * v.y + v.z * v.z)
+    }
+
+    @Composable
+    fun TriangleCanvas(position: Position) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            // Stroke width for the lines
+            val strokeWidth = 4.dp.toPx()
+
+            // Define the points of the triangle
+            val p1 = center.copy(y = position.y - size.minDimension / 4)
+            val p2 = center.copy(x = position.x - size.minDimension / 4, y = position.y + size.minDimension / 4)
+            val p3 = center.copy(x = position.x + size.minDimension / 4, y = position.y + size.minDimension / 4)
+
+            // Draw the triangle
+            drawLine(Color.Red, p1, p2, strokeWidth, cap = StrokeCap.Round)
+            drawLine(Color.Red, p2, p3, strokeWidth, cap = StrokeCap.Round)
+            drawLine(Color.Red, p3, p1, strokeWidth, cap = StrokeCap.Round)
+        }
+    }
+    @Composable
+    fun TriangleCanvas() {
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            // Stroke width for the lines
+            val strokeWidth = 4.dp.toPx()
+
+            // Define the points of the triangle
+            val p1 = center.copy(y = center.y - size.minDimension / 4)
+            val p2 = center.copy(x = center.x - size.minDimension / 4, y = center.y + size.minDimension / 4)
+            val p3 = center.copy(x = center.x + size.minDimension / 4, y = center.y + size.minDimension / 4)
+
+            // Draw the triangle
+            drawLine(Color.Red, p1, p2, strokeWidth, cap = StrokeCap.Round)
+            drawLine(Color.Red, p2, p3, strokeWidth, cap = StrokeCap.Round)
+            drawLine(Color.Red, p3, p1, strokeWidth, cap = StrokeCap.Round)
+        }
+    }
+
+    @Composable
+    fun QuadrilateralCanvas() {
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            // Stroke width for the lines
+            val strokeWidth = 4.dp.toPx()
+
+            // Define the points of the quadrilateral
+            val p1 = center.copy(x = center.x - size.minDimension / 4, y = center.y - size.minDimension / 2)
+            val p2 = center.copy(x = center.x + size.minDimension / 4, y = center.y - size.minDimension / 2)
+            val p3 = center.copy(x = center.x + size.minDimension / 4, y = center.y + size.minDimension / 2)
+            val p4 = center.copy(x = center.x - size.minDimension / 4, y = center.y + size.minDimension / 2)
+
+            // Draw the quadrilateral
+            //drawLine(Color.Green, p1, p2, strokeWidth, cap = StrokeCap.Round)
+            drawLine(Color.Green, p2, p3, strokeWidth, cap = StrokeCap.Round)
+            //drawLine(Color.Green, p3, p4, strokeWidth, cap = StrokeCap.Round)
+            drawLine(Color.Green, p4, p1, strokeWidth, cap = StrokeCap.Round)
+        }
+    }
     @Composable
     fun SceneViewMovingObject(viewModel: SceneFixedCameraViewModel, movingObjectNode: Node) {
         val position by viewModel.position.collectAsState()
@@ -134,11 +256,9 @@ class SceneViewFixedCameraActivity : ComponentActivity() {
             )
             Button(onClick = { viewModel.moveForward() }) {
                 Text(text ="Move Forward" )
-                Log.d("scene","Move Forward")
             }
             Button(onClick = { viewModel.moveBackward() }) {
                 Text(text ="Move Backward" )
-                Log.d("scene","Move Backward")
             }
         }
     }

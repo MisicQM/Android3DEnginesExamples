@@ -2,7 +2,6 @@ package com.natasa
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -59,7 +58,6 @@ class MainActivity : ComponentActivity() {
                             ElevatedButton(
                                 modifier = Modifier.padding(all = 16.dp),
                                 onClick = {
-
                                     startActivity(
                                         Intent(
                                             this@MainActivity,
@@ -70,7 +68,6 @@ class MainActivity : ComponentActivity() {
                                 Text("Go to SceneView 3D Example ")
                             }
                             ElevatedButton(onClick = {
-
                                 startActivity(
                                     Intent(
                                         this@MainActivity,
@@ -80,7 +77,36 @@ class MainActivity : ComponentActivity() {
                             }) {
                                 Text("Go to SceneView Fixed Camera Example")
                             }
-
+                            ElevatedButton(onClick = {
+                                startActivity(
+                                    Intent(
+                                        this@MainActivity,
+                                        CanvasExampleActivity::class.java
+                                    )
+                                )
+                            }) {
+                                Text("Go to Canvas Example")
+                            }
+                            ElevatedButton(onClick = {
+                                startActivity(
+                                    Intent(
+                                        this@MainActivity,
+                                        CanvasExampleActivity2::class.java
+                                    )
+                                )
+                            }) {
+                                Text("Go to Canvas Example 2")
+                            }
+                            ElevatedButton(onClick = {
+                                startActivity(
+                                    Intent(
+                                        this@MainActivity,
+                                        CanvasExampleActivity3::class.java
+                                    )
+                                )
+                            }) {
+                                Text("Go to Canvas Example With Images")
+                            }
                         }
                     }
 

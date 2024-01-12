@@ -80,20 +80,6 @@ class FilamentModelRenderer {
 
         createRenderables()
     }
-    fun moveObject(x: Float, y: Float, z: Float) {
-        // Get the TransformManager
-        val transformManager = modelViewer.engine.transformManager
-
-        // Get the transform instance for the entity
-       // val tcmInstance = transformManager.getInstance(modelEntity)
-
-        // Create a translation matrix
-      //  val translation = Mat4()
-       // translation.translate(x, y, z)
-
-        // Apply the translation to the transform
-       // transformManager.setTransform(tcmInstance, translation.toFloatArray())
-    }
 
     private fun createRenderables() {
 
