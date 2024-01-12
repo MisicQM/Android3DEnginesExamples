@@ -18,7 +18,16 @@ class TrajectoryViewModel : ViewModel() {
     }
 
     private fun calculateTrajectoryPoints(): List<Offset> {
-        //  calculation logic here.
-        return listOf( /* ... */ )
+       //trajetory points
+
+
+        val start = Offset(100f, 100f)
+        val cp1 = Offset(300f, 300f)
+        val cp2 = Offset(500f, 800f)
+        val cp3 = Offset(500f, 900f)
+        val cp4 = Offset(500f, 1000f)
+        val cp5 = Offset(300f, 1200f)
+        val end = Offset(100f, 1200f)
+        return listOf( start, cp1, cp2, cp3, cp4, cp5, end )
     }
 }
