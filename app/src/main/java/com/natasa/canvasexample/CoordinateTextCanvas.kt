@@ -6,14 +6,46 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
+/**Canvas coordinates:
+ * (0,0): Top-left corner of the canvas.
+ * (width, 0): Top-right corner of the canvas.
+ * (0, height): Bottom-left corner of the canvas.
+ * (width, height): Bottom-right corner of the canvas.
+ *
+ * Center:
+ * (width / 2, height / 2): Center of the canvas.
+ *
+ * (0,0)                               (width,0)
+ *   +--------------------------------------+
+ *   |                                      |
+ *   |                                      |
+ *   |                  C1                  |
+ *   |               , - - - .              |
+ *   |           ,-'           '-.          |
+ *   |         /                   \        |
+ *   |        /                     \       |
+ *   |       ;                       :      |
+ *   |       |           + (center)  |      |
+ *   |       :                       ;      |
+ *   |        \                     /       |
+ *   |         \,                 ,/        |
+ *   |           '-.           ,-'          |
+ *   |               ` - - - '              |
+ *   |                  C2                  |
+ *   |                                      |
+ *   +--------------------------------------+
+ * (0,height)                           (width,height)
+ */
 @Composable
 fun CoordinateTextCanvas() {
     val textStyle = TextStyle(color = Color.Black, fontSize = 16.sp)
@@ -77,4 +109,28 @@ fun DrawScope.drawText(painter: TextPainter, text: String, position: Offset, tex
             color = textStyle.color.toArgb()
         }
     )
+}
+@Composable
+fun GridCanvas(lineColor: Color) {
+    Canvas(modifier = Modifier.fillMaxSize()) {
+        val strokeWidth = 1.dp.toPx() // Set the stroke width for the grid lines
+        val cellSize = Size(100.dp.toPx(), 100.dp.toPx()) // The size for each cell
+
+        // Calculate the number of cells horizontally and vertically
+        val cellsInRow = (size.width / cellSize.width).toInt()
+        val cellsInColumn = (size.height / cellSize.height).toInt()
+
+        // Draw the grid
+        for (i in 0..cellsInRow) {
+            for (j in 0..cellsInColumn) {
+                val topLeft = Offset(i * cellSize.width, j * cellSize.height)
+                drawRect(
+                    color = lineColor,
+                    topLeft = topLeft,
+                    size = cellSize,
+                    style = Stroke(width = strokeWidth)
+                )
+            }
+        }
+    }
 }

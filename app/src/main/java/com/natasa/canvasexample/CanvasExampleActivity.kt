@@ -33,7 +33,6 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.text.TextStyle
 import com.natasa.canvasexample.ImageHelper.loadImageBitmap
 import com.natasa.canvasexample.PathHelper.cubicBezier
 import com.natasa.canvasexample.PathHelper.cubicBezierTangent
@@ -51,10 +50,13 @@ class CanvasExampleActivity : ComponentActivity() {
             MaterialTheme {
                 Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-
+                       // MovingGridCanvas()
+                        GridCanvas(lineColor = Color.LightGray)
                       CarAndTrajectoryCanvas(viewModel = viewModel)
                        // TrajectoryViewMoreUsecases(viewModel = viewModel)
+
                         CoordinateTextCanvas()
+
                     }
                 }
             }
@@ -74,7 +76,6 @@ fun CarAndTrajectoryCanvas(viewModel : TrajectoryViewModel) {
     // Convert dp to pixel
     val carWidthPx = with(LocalDensity.current) { 240.dp.toPx() }
     val carHeightPx = with(LocalDensity.current) { 570.dp.toPx() }
-
     LaunchedEffect(Unit) {
         launch {
             animatable.animateTo(
@@ -84,11 +85,12 @@ fun CarAndTrajectoryCanvas(viewModel : TrajectoryViewModel) {
                     repeatMode = RepeatMode.Reverse
                 )
             )
+
         }
     }
     Canvas(modifier = Modifier
         .fillMaxSize()
-        .background(Color.LightGray)) {
+        .background(Color.Transparent)) {
         // Define the starting point and the control points for the trajectory:
         //Offset( x: Float, y: Float)
 
