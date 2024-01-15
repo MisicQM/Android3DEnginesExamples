@@ -1,8 +1,7 @@
-package com.natasa
+package com.natasa.sceneview
 
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Canvas
@@ -24,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -34,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.filament.Camera
-import com.google.android.filament.utils.Float3
+import com.natasa.SceneviewTheme
 import io.github.sceneview.Scene
 import io.github.sceneview.math.Position
 import io.github.sceneview.math.Rotation
@@ -47,7 +45,7 @@ import io.github.sceneview.rememberModelLoader
 import io.github.sceneview.rememberNode
 import kotlin.math.sqrt
 
-class SceneViewFixedCameraActivity : ComponentActivity() {
+class SceneViewFixedCameraActivityGrid : ComponentActivity() {
 
     @OptIn(ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +62,10 @@ class SceneViewFixedCameraActivity : ComponentActivity() {
                 val modelLoader = rememberModelLoader(engine)
                 val environmentLoader = rememberEnvironmentLoader(engine)
 
+
+
+
+
                 // Set up nodes for the car and other moving objects
                 val carNode = rememberNode {
                     ModelNode(
@@ -77,9 +79,9 @@ class SceneViewFixedCameraActivity : ComponentActivity() {
 
                 // Set up the camera with a top-down view
                 val cameraNode = rememberCameraNode(engine).apply {
-                    position = Position(x = 0f, y = 30f, z = 0f) // Y is the elevation
+                    position = Position(x = 0f, y = 24f, z = 0f) // Y is the elevation
 
-                    rotation = Rotation(x = -90f, y = 0f, z = 0f) // -90 degrees around the X-axis to look down
+                    rotation = Rotation(x = -70f, y = 0f, z = 0f) // -70 degrees around the X-axis to look down
                     // Set to orthographic projection, if supported
                     setProjection(
                         Camera.Projection.ORTHO,
@@ -126,33 +128,14 @@ class SceneViewFixedCameraActivity : ComponentActivity() {
 
                 // UI for controlling the moving car
                 SceneViewMovingObject(movingObjectNode = centerNode, viewModel = viewModel)
-                TriangleCanvas()
+               // TriangleCanvas()
                 QuadrilateralCanvas()
-                SceneWithOverlayCanvas2(viewModel= viewModel)
+                //SceneWithOverlayCanvas2(viewModel= viewModel)
             }
         }
     }
     }
-    @Composable
-    fun SceneWithOverlayCanvas(viewModel: SceneFixedCameraViewModel) {
-        // State for the path
-        val pathState = remember { mutableStateOf(Path()) }
 
-        Box(modifier = Modifier.fillMaxSize()) {
-            // Your SceneView setup here
-          //  Scene(
-                // Scene parameters...
-          //  )
-
-            // Canvas overlay
-            Canvas(modifier = Modifier.matchParentSize()) {
-                drawPath(pathState.value, color = Color.Blue
-                    , style = Stroke(width = 5f))
-            }
-        }
-
-        // Logic to update pathState based on your application's needs
-    }
     @Composable
     fun SceneWithOverlayCanvas2(viewModel: SceneFixedCameraViewModel) {
         val pathState = remember { mutableStateOf(Path()) }
@@ -176,15 +159,12 @@ class SceneViewFixedCameraActivity : ComponentActivity() {
             }
         }
 
-        Box(modifier = Modifier.fillMaxSize()) {
+       // Box(modifier = Modifier.fillMaxSize()) {
 
-            Canvas(modifier = Modifier.matchParentSize()) {
-                drawPath(pathState.value, color = Color.Red, style = Stroke(width = 5f))
-            }
-        }
-    }
-    fun magnitude1(v: Position): Float {
-        return sqrt(v.x * v.x + v.y * v.y + v.z * v.z)
+           // Canvas(modifier = Modifier.matchParentSize()) {
+               // drawPath(pathState.value, color = Color.Red, style = Stroke(width = 5f))
+            //}
+        //}
     }
 
     @Composable

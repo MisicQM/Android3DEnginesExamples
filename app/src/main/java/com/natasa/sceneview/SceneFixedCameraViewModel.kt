@@ -1,4 +1,4 @@
-package com.natasa
+package com.natasa.sceneview
 
 import androidx.lifecycle.ViewModel
 import io.github.sceneview.math.Position

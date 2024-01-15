@@ -110,27 +110,4 @@ fun DrawScope.drawText(painter: TextPainter, text: String, position: Offset, tex
         }
     )
 }
-@Composable
-fun GridCanvas(lineColor: Color) {
-    Canvas(modifier = Modifier.fillMaxSize()) {
-        val strokeWidth = 1.dp.toPx() // Set the stroke width for the grid lines
-        val cellSize = Size(100.dp.toPx(), 100.dp.toPx()) // The size for each cell
 
-        // Calculate the number of cells horizontally and vertically
-        val cellsInRow = (size.width / cellSize.width).toInt()
-        val cellsInColumn = (size.height / cellSize.height).toInt()
-
-        // Draw the grid
-        for (i in 0..cellsInRow) {
-            for (j in 0..cellsInColumn) {
-                val topLeft = Offset(i * cellSize.width, j * cellSize.height)
-                drawRect(
-                    color = lineColor,
-                    topLeft = topLeft,
-                    size = cellSize,
-                    style = Stroke(width = strokeWidth)
-                )
-            }
-        }
-    }
-}

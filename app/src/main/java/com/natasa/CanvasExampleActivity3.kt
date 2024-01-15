@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import com.natasa.canvasexample.ImageHelper.loadImageBitmap
 import kotlinx.coroutines.launch
 import java.io.InputStream
 import kotlin.math.atan2
@@ -82,29 +83,6 @@ class CanvasExampleActivity3 : ComponentActivity() {
         )
     }
 
-    // Helper functions for a single cubic Bezier curve
-    fun cubicBezier2(t: Float, p0: Offset, p1: Offset, p2: Offset, p3: Offset): Offset {
-        val oneMinusT = 1 - t
-        return Offset(
-            x = oneMinusT.pow(3) * p0.x + 3 * oneMinusT.pow(2) * t * p1.x + 3 * oneMinusT * t.pow(2) * p2.x + t.pow(3) * p3.x,
-            y = oneMinusT.pow(3) * p0.y + 3 * oneMinusT.pow(2) * t * p1.y + 3 * oneMinusT * t.pow(2) * p2.y + t.pow(3) * p3.y
-        )
-    }
-
-    fun cubicBezierTangent2(t: Float, p0: Offset, p1: Offset, p2: Offset, p3: Offset): Float {
-        val oneMinusT = 1 - t
-        val dx = 3 * oneMinusT.pow(2) * (p1.x - p0.x) +
-                6 * oneMinusT * t * (p2.x - p1.x) +
-                3 * t.pow(2) * (p3.x - p2.x)
-        val dy = 3 * oneMinusT.pow(2) * (p1.y - p0.y) +
-                6 * oneMinusT * t * (p2.y - p1.y) +
-                3 * t.pow(2) * (p3.y - p2.y)
-        return atan2(dy, dx) * (180 / Math.PI).toFloat()
-    }
-    fun loadImageBitmap(inputStream: InputStream): ImageBitmap {
-        val bitmap = BitmapFactory.decodeStream(inputStream)
-        return bitmap.asImageBitmap()
-    }
     // Your Composable function
     @Composable
     fun TrajectoryRoadWithCarDots3() {
@@ -130,13 +108,12 @@ class CanvasExampleActivity3 : ComponentActivity() {
             }
         }
 
-       // val imageStream: InputStream = getAssetInputStream("car.png")
-       // val imageBitmap: ImageBitmap = loadImageBitmapFromStream(imageStream)
 
         val context = LocalContext.current
-        val imageBitmap: ImageBitmap by remember {
-            mutableStateOf(loadImageBitmap(context.assets.open("car.png")))
+        val carImageBitmap: ImageBitmap by remember {
+            mutableStateOf(loadImageBitmap(context.assets.open("defaultCar.png")))
         }
+
         // Convert dp to pixel
         val carWidthPx = with(LocalDensity.current) { 160.dp.toPx() }
         val carHeightPx = with(LocalDensity.current) { 130.dp.toPx() }
@@ -171,56 +148,36 @@ class CanvasExampleActivity3 : ComponentActivity() {
             val segmentPoints = points.subList(segmentIndex, segmentIndex + 4)
 
             // Interpolate the position for the current segment
-            val carPosition = cubicBezier2(t, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
+            val carPosition = cubicBezier(t, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
 
             // Calculate the tangent angle for the current segment
-            val tangentAngle = cubicBezierTangent2(t, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
+            val tangentAngle = cubicBezierTangent(t, segmentPoints[0], segmentPoints[1], segmentPoints[2], segmentPoints[3])
 
-            val scale = minOf(carWidthPx / imageBitmap.width, carHeightPx / imageBitmap.height)
+            val scale = minOf(carWidthPx / carImageBitmap.width, carHeightPx / carImageBitmap.height)
 
             withTransform({
                 // Rotate the image
-                rotate(degrees = tangentAngle+90, pivot = carPosition)
+                rotate(degrees = tangentAngle+180, pivot = carPosition)
                 // Proportionally scale the image
                 scale(scale, scale, pivot = carPosition)
             }) {
                 // Calculate the scaled dimensions of the car
-                val scaledCarWidth = imageBitmap.width * scale
-                val scaledCarHeight = imageBitmap.height * scale
+                val scaledCarWidth = carImageBitmap.width * scale
+                val scaledCarHeight = carImageBitmap.height * scale
 
                 // Adjust topLeft position so the center of the car aligns with carPosition,
                 //this is important for the car position on the path
                 val carTopLeft = Offset(
-                    x = carPosition.x - (scaledCarWidth + scaledCarWidth/2),
-                    y = carPosition.y - scaledCarHeight
+                    x = carPosition.x - (scaledCarWidth ),
+                    y = carPosition.y - scaledCarHeight*3 //fixing car center position
                 )
 
                 // Draw the image
                 drawImage(
-                    image = imageBitmap,
+                    image = carImageBitmap,
                     topLeft = carTopLeft
                 )
             }
-        }
-    }
-
-    fun loadImageBitmapFromStream(inputStream: InputStream): ImageBitmap {
-        val bitmap = BitmapFactory.decodeStream(inputStream)
-        return bitmap.asImageBitmap()
-    }
-    @Composable
-    fun getAssetInputStream(assetName: String): InputStream {
-        val context = LocalContext.current
-        return context.assets.open(assetName)
-    }
-    @Composable
-    fun getDrawableInputStream(resourceName: String): InputStream? {
-        val context = LocalContext.current
-        val resourceId = context.resources.getIdentifier(resourceName, "drawable", context.packageName)
-        return if (resourceId != 0) {
-            context.resources.openRawResource(resourceId)
-        } else {
-            null
         }
     }
 

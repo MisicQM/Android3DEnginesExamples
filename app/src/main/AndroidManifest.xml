@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.natasa.SceneViewFixedCameraActivity"
+            android:name="com.natasa.sceneview.SceneViewFixedCameraActivity"
             android:exported="true"
             />
         <activity
@@ -28,7 +28,7 @@
             android:exported="true"
             />
         <activity
-            android:name="com.natasa.SceneView3DActivity"
+            android:name="com.natasa.sceneview.SceneView3DActivity"
             android:exported="true"
             />
         <activity
@@ -41,6 +41,22 @@
             />
         <activity
             android:name="com.natasa.CanvasExampleActivity3"
+            android:exported="true"
+            />
+        <activity
+            android:name="com.natasa.canvasexample.CanvasExampleActivityGridTraj"
+            android:exported="true"
+            />
+        <activity
+            android:name="com.natasa.canvasexample.CanvasExampleActivityGrid"
+            android:exported="true"
+            />
+        <activity
+            android:name="com.natasa.libgdxexample.LibGdx2DActivity"
+            android:exported="true"
+            />
+        <activity
+            android:name="com.natasa.sceneview.SceneViewFixedCameraActivityGrid"
             android:exported="true"
             />
     </application>

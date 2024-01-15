@@ -19,6 +19,4 @@ class NonTouchableSceneView : SceneView {
         return true
     }
 
-    // If you want to disable other types of touch interactions,
-    // like scrolling or flinging, you would override those as well.
 }

@@ -18,7 +18,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.natasa.canvasexample.CanvasExampleActivity
+import com.natasa.canvasexample.CanvasExampleActivityGrid
+import com.natasa.canvasexample.CanvasExampleActivityGridTraj
 import com.natasa.filamentexample.FilamentActivity
+import com.natasa.sceneview.SceneView3DActivity
+import com.natasa.sceneview.SceneViewFixedCameraActivity
+import com.natasa.sceneview.SceneViewFixedCameraActivityGrid
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,12 +87,13 @@ class MainActivity : ComponentActivity() {
                                 startActivity(
                                     Intent(
                                         this@MainActivity,
-                                        CanvasExampleActivity::class.java
+                                        SceneViewFixedCameraActivityGrid::class.java
                                     )
                                 )
                             }) {
-                                Text("Go to Canvas Example")
+                                Text("Go to SceneView Fixed Camera Example Grid")
                             }
+
                             ElevatedButton(onClick = {
                                 startActivity(
                                     Intent(
@@ -107,6 +113,26 @@ class MainActivity : ComponentActivity() {
                                 )
                             }) {
                                 Text("Go to Canvas Example With Images")
+                            }
+                            ElevatedButton(onClick = {
+                                startActivity(
+                                    Intent(
+                                        this@MainActivity,
+                                        CanvasExampleActivity::class.java
+                                    )
+                                )
+                            }) {
+                                Text("Go to Canvas Example animation")
+                            }
+                            ElevatedButton(onClick = {
+                                startActivity(
+                                    Intent(
+                                        this@MainActivity,
+                                        CanvasExampleActivityGrid::class.java
+                                    )
+                                )
+                            }) {
+                                Text("Go to Canvas Example anim Grid")
                             }
                         }
                     }

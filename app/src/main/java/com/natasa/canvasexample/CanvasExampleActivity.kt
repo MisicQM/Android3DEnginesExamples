@@ -70,12 +70,15 @@ class CanvasExampleActivity : ComponentActivity() {
 fun CarAndTrajectoryCanvas(viewModel : TrajectoryViewModel) {
     val animatable = remember { Animatable(0f) }
     val context = LocalContext.current
-    val imageBitmap: ImageBitmap by remember {
-        mutableStateOf(loadImageBitmap(context.assets.open("car.png")))
+    val carImageBitmap: ImageBitmap by remember {
+        mutableStateOf(loadImageBitmap(context.assets.open("defaultCar.png")))
+    }
+    val gridImageBitmap: ImageBitmap by remember {
+        mutableStateOf(loadImageBitmap(context.assets.open("models/grid_bg.jpg")))
     }
     // Convert dp to pixel
-    val carWidthPx = with(LocalDensity.current) { 240.dp.toPx() }
-    val carHeightPx = with(LocalDensity.current) { 570.dp.toPx() }
+    val carWidthPx = with(LocalDensity.current) { 340.dp.toPx() }
+    val carHeightPx = with(LocalDensity.current) { 340.dp.toPx() }
     LaunchedEffect(Unit) {
         launch {
             animatable.animateTo(
@@ -94,6 +97,7 @@ fun CarAndTrajectoryCanvas(viewModel : TrajectoryViewModel) {
         // Define the starting point and the control points for the trajectory:
         //Offset( x: Float, y: Float)
 
+
         val start = Offset(size.width / 2, size.height)
         val control1 = Offset(size.width / 4, size.height / 2)
         val control2 = Offset(3 * size.width / 4, size.height / 2)
@@ -111,13 +115,36 @@ val points = listOf(start, control1, control2, end)
         val carTopLeft = start.copy(x = start.x - carWidthPx / 2, y = start.y - carHeightPx / 2)
 
         // Rotate the car rectangle to match the trajectory's initial direction
-        val angle = 90f // Rotate the rectangle to align with the trajectory visually
-        drawCar(carTopLeft, carWidthPx, carHeightPx, angle, imageBitmap, animatable, points)
+
+        drawCar(carTopLeft, carWidthPx, carHeightPx, carImageBitmap, animatable, points)
     }
 }
 
+@Composable
+fun GridCanvas(lineColor: Color) {
+    Canvas(modifier = Modifier.fillMaxSize()) {
+        val strokeWidth = 1.dp.toPx() // Set the stroke width for the grid lines
+        val cellSize = Size(60.dp.toPx(), 60.dp.toPx()) // The size for each cell
 
-//drawing more trajectory points and handking of the drawing path smoothly by taking care not only to draw the line,
+        // Calculate the number of cells horizontally and vertically
+        val cellsInRow = (size.width / cellSize.width).toInt()
+        val cellsInColumn = (size.height / cellSize.height).toInt()
+
+        // Draw the grid
+        for (i in 0..cellsInRow) {
+            for (j in 0..cellsInColumn) {
+                val topLeft = Offset(i * cellSize.width, j * cellSize.height)
+                drawRect(
+                    color = lineColor,
+                    topLeft = topLeft,
+                    size = cellSize,
+                    style = Stroke(width = strokeWidth)
+                )
+            }
+        }
+    }
+}
+//drawing more trajectory points and handling of the drawing path smoothly by taking care not only to draw the line,
 //to draw the cubic Bezier curve or quadratic  Bezier curve
 @Composable
 fun TrajectoryViewMoreUsecases(viewModel: TrajectoryViewModel) {
@@ -177,7 +204,6 @@ fun DrawScope.drawCar(
     topLeft: Offset,
     width: Float,
     height: Float,
-    angle: Float,
     imageBitmap: ImageBitmap,
     animatable: Animatable<Float, AnimationVector1D>,
     trajectoryPoints: List<Offset>
@@ -211,7 +237,7 @@ fun DrawScope.drawCar(
 
     withTransform({
         // Rotate the image
-        rotate(degrees = tangentAngle + 90, pivot = carPosition)
+        rotate(degrees =180+tangentAngle, pivot = carPosition)
         // Proportionally scale the image
         scale(scale, scale, pivot = carPosition)
     }) {
@@ -221,8 +247,8 @@ fun DrawScope.drawCar(
 
         // Adjust topLeft position so the center of the car aligns with carPosition
         val carTopLeft = Offset(
-            x = carPosition.x - scaledCarWidth, //for the position seems somehow better to have it more on the center of the path
-            y = carPosition.y - scaledCarHeight / 2
+            x = carPosition.x - scaledCarWidth/2, //for the position seems somehow better to have it more on the center of the path
+            y = carPosition.y - scaledCarHeight
         )
 
         // Draw the image
