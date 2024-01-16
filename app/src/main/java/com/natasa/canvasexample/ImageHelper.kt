@@ -1,5 +1,6 @@
 package com.natasa.canvasexample
 
+import android.annotation.SuppressLint
 import android.graphics.BitmapFactory
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.ImageBitmap
@@ -22,6 +23,7 @@ import java.io.InputStream
          val context = LocalContext.current
          return context.assets.open(assetName)
      }
+     @SuppressLint("DiscouragedApi")
      @Composable
      fun getDrawableInputStream(resourceName: String): InputStream? {
          val context = LocalContext.current
@@ -32,4 +34,6 @@ import java.io.InputStream
              null
          }
      }
+
+
 }

@@ -36,11 +36,11 @@
             android:exported="true"
             />
         <activity
-            android:name="com.natasa.CanvasExampleActivity2"
+            android:name="com.natasa.canvasexample.CanvasExampleActivitySimple"
             android:exported="true"
             />
         <activity
-            android:name="com.natasa.CanvasExampleActivity3"
+            android:name="com.natasa.canvasexample.CanvasExampleActivityCarImage"
             android:exported="true"
             />
         <activity
@@ -55,10 +55,7 @@
             android:name="com.natasa.libgdxexample.LibGdx2DActivity"
             android:exported="true"
             />
-        <activity
-            android:name="com.natasa.sceneview.SceneViewFixedCameraActivityGrid"
-            android:exported="true"
-            />
+
     </application>
 
 </manifest>

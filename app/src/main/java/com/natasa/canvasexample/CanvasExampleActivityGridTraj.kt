@@ -26,6 +26,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.natasa.canvasexample.ImageHelper.loadImageBitmap
+/**
+ * Not used for now
+ * to be continuned and refactored...
+ * */
 class CanvasExampleActivityGridTraj : ComponentActivity() {
 
     private val viewModel: ParkingViewModel by viewModels()
@@ -43,7 +47,7 @@ class CanvasExampleActivityGridTraj : ComponentActivity() {
                         val gridOffset =
                             remember { Animatable(Offset.Zero, Offset.VectorConverter) }
 
-                        GridCanvas2(gridRotation, gridOffset, Color.LightGray)
+                                //  GridCanvasAnimated( gridOffset, Color.LightGray,)
                         CarAndTrajectoryCanvas3(gridRotation, gridOffset, viewModel)
                         CoordinateTextCanvas()
                     }

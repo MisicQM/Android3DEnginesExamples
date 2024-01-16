@@ -6,8 +6,6 @@ import android.view.MotionEvent
 import io.github.sceneview.SceneView
 
 class NonTouchableSceneView : SceneView {
-
-    // Standard constructors for the view
     constructor(context: Context) : super(context)
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)

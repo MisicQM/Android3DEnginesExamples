@@ -1,7 +1,5 @@
-package com.natasa
+package com.natasa.canvasexample
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -28,19 +26,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import com.natasa.canvasexample.ImageHelper.loadImageBitmap
+import com.natasa.canvasexample.PathHelper.cubicBezier
+import com.natasa.canvasexample.PathHelper.cubicBezierTangent
 import kotlinx.coroutines.launch
-import java.io.InputStream
 import kotlin.math.atan2
 import kotlin.math.pow
 
-class CanvasExampleActivity3 : ComponentActivity() {
+class CanvasExampleActivityCarImage : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -63,27 +60,6 @@ class CanvasExampleActivity3 : ComponentActivity() {
         }
     }
 
-    // Helper function to calculate the tangent angle at a point on a cubic Bezier curve
-    fun cubicBezierTangent(t: Float, start: Offset, cp1: Offset, cp2: Offset, end: Offset): Float {
-        val oneMinusT = 1 - t
-        val dx = 3 * oneMinusT.pow(2) * (cp1.x - start.x) +
-                6 * oneMinusT * t * (cp2.x - cp1.x) +
-                3 * t.pow(2) * (end.x - cp2.x)
-        val dy = 3 * oneMinusT.pow(2) * (cp1.y - start.y) +
-                6 * oneMinusT * t * (cp2.y - cp1.y) +
-                3 * t.pow(2) * (end.y - cp2.y)
-        return atan2(dy, dx) * (180 / Math.PI).toFloat()
-    }
-    // Helper function to interpolate a point on a cubic Bezier curve
-    private fun cubicBezier(t: Float, start: Offset, cp1: Offset, cp2: Offset, end: Offset): Offset {
-        val oneMinusT = 1 - t
-        return Offset(
-            x = oneMinusT.pow(3) * start.x + 3 * oneMinusT.pow(2) * t * cp1.x + 3 * oneMinusT * t.pow(2) * cp2.x + t.pow(3) * end.x,
-            y = oneMinusT.pow(3) * start.y + 3 * oneMinusT.pow(2) * t * cp1.y + 3 * oneMinusT * t.pow(2) * cp2.y + t.pow(3) * end.y
-        )
-    }
-
-    // Your Composable function
     @Composable
     fun TrajectoryRoadWithCarDots3() {
         val animatable = remember { Animatable(0f) }

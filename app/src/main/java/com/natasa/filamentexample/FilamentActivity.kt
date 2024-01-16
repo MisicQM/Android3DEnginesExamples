@@ -43,7 +43,7 @@ class FilamentActivity : ComponentActivity() {
                             modifier = Modifier
                                 .align(Alignment.CenterHorizontally)
                                 .padding(16.dp),
-                            text = "Filament Model Rendered - Cannot render all the assets as the SceneView. More settings?!",
+                            text = "Filament Model Rendered - Cannot render all the assets as the SceneView?!",
                             fontSize = 16.sp
                         )
                         AndroidView(factory = { context ->

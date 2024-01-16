@@ -148,7 +148,6 @@ class SceneViewFixedCameraActivity : ComponentActivity() {
             }
         }
 
-        // Assuming you have a way to get updates about the object's position in the SceneView
         LaunchedEffect(viewModel) {
             viewModel.position.collect { newPosition ->
                 updatePath(newPosition)

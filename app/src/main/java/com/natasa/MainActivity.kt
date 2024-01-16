@@ -18,12 +18,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.natasa.canvasexample.CanvasExampleActivity
+import com.natasa.canvasexample.CanvasExampleActivityCarImage
 import com.natasa.canvasexample.CanvasExampleActivityGrid
-import com.natasa.canvasexample.CanvasExampleActivityGridTraj
+import com.natasa.canvasexample.CanvasExampleActivitySimple
 import com.natasa.filamentexample.FilamentActivity
 import com.natasa.sceneview.SceneView3DActivity
 import com.natasa.sceneview.SceneViewFixedCameraActivity
-import com.natasa.sceneview.SceneViewFixedCameraActivityGrid
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,10 +48,10 @@ class MainActivity : ComponentActivity() {
                                 modifier = Modifier
                                     .align(Alignment.CenterHorizontally)
                                     .padding(26.dp),
-                                text = "All examples, with the exception of the Fixed Camera, support zooming in and out as well as rotation using finger gestures.",
+                                text = "Different 2D/3D Android examples:",
                                 fontSize = 16.sp
                             )
-                            ElevatedButton(onClick = {
+                            ElevatedButton( modifier = Modifier.padding(all = 16.dp),onClick = {
                                 startActivity(
                                     Intent(
                                         this@MainActivity,
@@ -73,7 +73,7 @@ class MainActivity : ComponentActivity() {
                                 }) {
                                 Text("Go to SceneView 3D Example ")
                             }
-                            ElevatedButton(onClick = {
+                            ElevatedButton( modifier = Modifier.padding(all = 16.dp),onClick = {
                                 startActivity(
                                     Intent(
                                         this@MainActivity,
@@ -83,38 +83,29 @@ class MainActivity : ComponentActivity() {
                             }) {
                                 Text("Go to SceneView Fixed Camera Example")
                             }
-                            ElevatedButton(onClick = {
-                                startActivity(
-                                    Intent(
-                                        this@MainActivity,
-                                        SceneViewFixedCameraActivityGrid::class.java
-                                    )
-                                )
-                            }) {
-                                Text("Go to SceneView Fixed Camera Example Grid")
-                            }
 
-                            ElevatedButton(onClick = {
+
+                            ElevatedButton( modifier = Modifier.padding(all = 16.dp),onClick = {
                                 startActivity(
                                     Intent(
                                         this@MainActivity,
-                                        CanvasExampleActivity2::class.java
+                                        CanvasExampleActivitySimple::class.java
                                     )
                                 )
                             }) {
-                                Text("Go to Canvas Example 2")
+                                Text("Go to Canvas Simple Path")
                             }
-                            ElevatedButton(onClick = {
+                            ElevatedButton( modifier = Modifier.padding(all = 16.dp),onClick = {
                                 startActivity(
                                     Intent(
                                         this@MainActivity,
-                                        CanvasExampleActivity3::class.java
+                                        CanvasExampleActivityCarImage::class.java
                                     )
                                 )
                             }) {
-                                Text("Go to Canvas Example With Images")
+                                Text("Go to Canvas Example With Car Image")
                             }
-                            ElevatedButton(onClick = {
+                            ElevatedButton( modifier = Modifier.padding(all = 16.dp),onClick = {
                                 startActivity(
                                     Intent(
                                         this@MainActivity,
@@ -122,9 +113,9 @@ class MainActivity : ComponentActivity() {
                                     )
                                 )
                             }) {
-                                Text("Go to Canvas Example animation")
+                                Text("Go to Canvas Example With Car Animation")
                             }
-                            ElevatedButton(onClick = {
+                            ElevatedButton( modifier = Modifier.padding(all = 16.dp),onClick = {
                                 startActivity(
                                     Intent(
                                         this@MainActivity,
@@ -132,7 +123,7 @@ class MainActivity : ComponentActivity() {
                                     )
                                 )
                             }) {
-                                Text("Go to Canvas Example anim Grid")
+                                Text("Go to Canvas Example Grid Animation")
                             }
                         }
                     }

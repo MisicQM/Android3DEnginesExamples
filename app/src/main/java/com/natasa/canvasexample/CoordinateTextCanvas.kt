@@ -60,17 +60,17 @@ fun CoordinateTextCanvas() {
         val topRightText = "${canvasWidth.toInt()},0"
         val bottomLeftText = "0,${canvasHeight.toInt()}"
         val bottomRightText = "${canvasWidth.toInt()},${canvasHeight.toInt()}"
-        val centerText = "${canvasWidth.toInt() / 2},${canvasHeight.toInt() / 2}"
+       // val centerText = "${canvasWidth.toInt() / 2},${canvasHeight.toInt() / 2}"
         // Draw text in the top-left corner
         drawText(textPainter, topLeftText, Offset(0f, 0f), textStyle)
         //center
-        val centerTextWidth = textPainter.measureTextWidth(centerText, textStyle)
-        drawText(
-            textPainter,
-            centerText,
-            Offset(canvasWidth / 2, canvasHeight / 2 - centerTextWidth),
-            textStyle
-        )
+      //  val centerTextWidth = textPainter.measureTextWidth(centerText, textStyle)
+       // drawText(
+           // textPainter,
+           // centerText,
+           // Offset(canvasWidth / 2, canvasHeight / 2 - centerTextWidth),
+           // textStyle
+      //  )
         // Draw text in the top-right corner
         // Adjust the x position by the width of the text to align it to the right, paint
         val topRightTextWidth = textPainter.measureTextWidth(topRightText, textStyle)

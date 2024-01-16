@@ -31,12 +31,9 @@ import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
 import com.badlogic.gdx.backends.android.AndroidAudio
 import com.badlogic.gdx.backends.android.AndroidGraphics
 import com.badlogic.gdx.backends.android.AndroidInput
-import com.badlogic.gdx.backends.android.surfaceview.FillResolutionStrategy
-import com.badlogic.gdx.backends.android.surfaceview.GLSurfaceView20
 import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Clipboard
 import com.badlogic.gdx.utils.SnapshotArray
-import com.natasa.ExamplesApp
 
 import javax.microedition.khronos.opengles.GL10
 
