@@ -27,7 +27,10 @@ Focusing on a top-down camera perspective, again using **SceneView** 3D engine, 
  <br/>
  
 
- 
+ ### 4. Jetpack Compose Canvas (2D), moving the ground grid and keeping the car in the center position
+  <br/>
+<img src="screenshots/canvas2d.gif" alt=" screenshot 3" width="220"> 
+ <br/>
 
 ## Contributing
 Even though the investigation task is still ongoing, the contributions to **Android3DEnginesExamples** are welcome. :) 
